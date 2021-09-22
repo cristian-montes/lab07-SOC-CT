@@ -15,6 +15,7 @@ describe('03_separation-of-concerns-demo routes', () => {
     return setup(pool);
   });
 
+  //POST A NEW ORDER TEST
   it('creates a new order in our database and sends a text message', () => {
     return request(app)
       .post('/api/v1/orders')
@@ -28,6 +29,7 @@ describe('03_separation-of-concerns-demo routes', () => {
       });
   });
 
+  //GET ALL TEST
   it('it gets all of the orders in file', () => {
     return request(app)
       .get('/api/v1/orders')
@@ -39,6 +41,18 @@ describe('03_separation-of-concerns-demo routes', () => {
       });
   });
 
+
+  //GET BY ID TEST
+  it('it gets order by id', () => {
+    return request(app)
+      .get('/api/v1/orders/1')
+      .then(res => {
+        expect(res.body).toEqual({
+          id: '1',
+          quantity: 10
+        });
+      });
+  });
 
 
 });
