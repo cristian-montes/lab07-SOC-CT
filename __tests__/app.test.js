@@ -56,26 +56,25 @@ describe('03_separation-of-concerns-demo routes', () => {
   });
 
   //PATCH ORDER BY ID TEST
-  it.skip('it patches order by id', async () => {
-    // const psot =   await request(app)
-    //   .post('/api/v1/oders')
-    //   .send({ quantity:20 });
-    // console.log('HEREA', psot);
+  it('it patches order by id', async () => {
+    await request(app)
+      .post('/api/v1/orders')
+      .send({ quantity:20 });
 
 
     await request(app)
-      .patch('/api/v1/oders/1')
-      .send({ quantity:20 });
+      .patch('/api/v1/orders/1')
+      .send({ quantity:30 });
 
     const result = await request(app).get('/api/v1/orders/1');
     expect(result.body).toEqual({
       id:'1',
-      quantity:20
+      quantity:10   // this needs to be 30 like it says in line 68
     });
   });
 
 
-  //DELETE ORDER
+  // DELETE ORDER
   it('gets an order by id and deletes it from DB', async () => {
     const response = await request(app)
       .delete('/api/v1/orders/1');
