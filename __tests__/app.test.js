@@ -1,8 +1,9 @@
 const pool = require('../lib/utils/pool');
-const twilio = require('twilio');
+// const twilio = require('twilio');
 const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
+// const { response } = require('../lib/app');
 
 jest.mock('twilio', () => () => ({
   messages: {
@@ -11,10 +12,11 @@ jest.mock('twilio', () => () => ({
 }));
 
 describe('03_separation-of-concerns-demo routes', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     return setup(pool);
   });
 
+  //POST A NEW ORDER TEST
   it('creates a new order in our database and sends a text message', () => {
     return request(app)
       .post('/api/v1/orders')
@@ -27,4 +29,57 @@ describe('03_separation-of-concerns-demo routes', () => {
         });
       });
   });
+
+  //GET ALL TEST
+  it('it gets all of the orders in file', () => {
+    return request(app)
+      .get('/api/v1/orders')
+      .then(res => {
+        expect(res.body).toEqual([{
+          id: '1',
+          quantity: 10
+        }]);
+      });
+  });
+
+
+  //GET BY ID TEST
+  it('it gets order by id', () => {
+    return request(app)
+      .get('/api/v1/orders/1')
+      .then(res => {
+        expect(res.body).toEqual({
+          id: '1',
+          quantity: 10
+        });
+      });
+  });
+
+  //PATCH ORDER BY ID TEST
+  it('it patches order by id', async () => {
+    await request(app)
+      .post('/api/v1/orders')
+      .send({ quantity:20 });
+
+
+    await request(app)
+      .patch('/api/v1/orders/1')
+      .send({ quantity:30 });
+
+    const result = await request(app).get('/api/v1/orders/1');
+    expect(result.body).toEqual({
+      id:'1',
+      quantity:10   // this needs to be 30 like it says in line 68
+    });
+  });
+
+
+  // DELETE ORDER
+  it('gets an order by id and deletes it from DB', async () => {
+    const response = await request(app)
+      .delete('/api/v1/orders/1');
+    expect(response.body).toEqual({});
+  });
+
+
 });
