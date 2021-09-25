@@ -56,22 +56,17 @@ describe('03_separation-of-concerns-demo routes', () => {
   });
 
   //PATCH ORDER BY ID TEST
-  it('it patches order by id', async () => {
-    await request(app)
-      .post('/api/v1/orders')
-      .send({ quantity:20 });
-
-
-    await request(app)
+  it('updates an reminder by id', () => { 
+    return request(app)
       .patch('/api/v1/orders/1')
-      .send({ quantity:30 });
-
-    const result = await request(app).get('/api/v1/orders/1');
-    expect(result.body).toEqual({
-      id:'1',
-      quantity:10   // this needs to be 30 like it says in line 68
-    });
-  });
+      .send({ quantity: 22 })
+      .then((res) => { 
+        expect (res.body).toEqual({
+          id: '1', 
+          quantity: 22
+        })
+      })
+  })
 
 
   // DELETE ORDER
